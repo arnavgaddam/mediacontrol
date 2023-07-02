@@ -4,3 +4,5 @@
 /setup_script.iss
 /test.py
 /venv
+/_pycache_
+*.json
