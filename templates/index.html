@@ -1,0 +1,77 @@
+<!doctype html>
+
+<html style="min-height: 100%;">
+  <head>
+    {{ turbo() }}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+  </head>
+  <body style="background-repeat: no-repeat;">
+    <!-- background-image: linear-gradient(to bottom right, rgb(216, 29, 30), rgb(49, 10, 9)); -->
+    <div class="container-fluid" style="margin-top: 200px;">
+        <div>  
+            <img src="/static/media_thumb.jpg" id="thumbnail" class="rounded mx-auto d-block" style="min-width: 12rem; min-height: auto; margin: 10px; border: 4px solid #555;">
+        </div>
+        <div id="title">
+            {% include "media.html" %}
+            {% block content %}{% endblock %}
+          </div>
+      
+        
+      <form method="post", class="text-center">
+        <div class="container" id="controlpanel" style="background-color: black; max-width: fit-content; border-radius: 5px;">
+        <input class="btn" type="submit" name = "previous" value="back" style="margin: 10px; max-width: 3rem;" src="/static/back.png"> 
+        <input class="btn" type="submit" name = "toggle" value="play" style="margin: 10px; max-width: 3rem;"  src="/static/play.png">
+        <input class="btn" type="submit" name = "next" value="next" style="margin: 10px; max-width: 3rem;"  src="/static/next.png">
+      </div>
+      </form>
+
+    </div>
+   <script> 
+    window.onload = function() {
+    var image = document.getElementById("thumbnail");
+    function updateImage() {
+        image.src = "/static/media_thumb.jpg".split("?")[0] + "?" + new Date().getTime();
+        
+    }
+
+    setInterval(updateImage, 1000);
+    }
+
+    const checkColor = (color) => {
+    // extract values of red, green and blue from color
+    if(color[0] + color[1] + color[2] >= 255 * 2 / 3)
+      return true; // color is light
+    
+    return false; // color is dark
+  } 
+
+
+    function changeColor(){
+      var colors = 0
+      fetch('/static/colors.json')
+      .then((response) => response.json())
+      .then(function(json){
+
+        document.body.style.backgroundImage = `linear-gradient(to bottom,  rgba(${json[1][0]}, ${json[1][1]}, ${json[1][2]}, 1),  rgba(${json[0][0]}, ${json[0][1]}, ${json[0][2]}, 1)`;
+        document.getElementById("controlpanel").style.backgroundColor = `rgb(${json[1][0]}, ${json[1][1]}, ${json[1][2]})`
+        if (checkColor(json[0]) == true){
+          document.getElementById("title").style.color = "white"
+        }
+        else {
+          document.getElementById("title").style.color = "white"
+        }
+        document.getElementById("thumbnail").style.border = `5px solid rgba(${json[1][0]}, ${json[1][1]}, ${json[1][2]}, 0.6)`
+        // document.getElementById("songname").style.color = "red"
+      });
+      
+    }
+
+    setInterval(changeColor, 1000);
+    </script>
+
+  </body>
+</html>
