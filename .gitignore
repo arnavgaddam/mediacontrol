@@ -6,3 +6,5 @@
 /venv
 /_pycache_
 *.json
+static/colors.json
+static/media_thumb.jpg
