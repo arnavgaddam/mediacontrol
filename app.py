@@ -17,8 +17,8 @@ from winsdk.windows.media.control import \
 
 # pyinstaller --onefile --add-data templates;templates --add-data static;static --icon="C:\Users\HP\Desktop\Python Scripts\mediacontrol\static\play.png"  app.py
 
-template_folder = ""
-static_folder = ""
+template_folder = "templates"
+static_folder = "static"
 if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, 'templates')
     static_folder = os.path.join(sys._MEIPASS, 'static')
@@ -44,7 +44,7 @@ with app.app_context():
     threading.Thread(target=update_load).start()
 
 @app.route("/", methods=['GET', 'POST'])
-def home(current="DEFAULT VALUE"):
+def home(current="No Song Playing"):
     if request.method == 'POST':
         if 'toggle' in request.form:
             print("playing")
@@ -70,6 +70,3 @@ def getsong():
 
 
 app.run(debug=False, host="0.0.0.0")
-
-def stop():
-    print("TODO: STOP SERVER")

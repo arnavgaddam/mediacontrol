@@ -66,8 +66,8 @@ class MediaPlayer:
         thumb_read_buffer = Buffer(10000000)
         # copies data from data stream reference into buffer created above
         asyncio.run(self.read_stream_into_buffer(thumb_stream_ref, thumb_read_buffer))
-        template_folder = ""
-        static_folder = ""
+        template_folder = "templates/"
+        static_folder = "static/"
         if getattr(sys, 'frozen', False):
             template_folder = os.path.join(sys._MEIPASS, 'templates')
             static_folder = os.path.join(sys._MEIPASS, 'static')
