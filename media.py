@@ -36,6 +36,7 @@ class MediaPlayer:
         if current_session:  # there needs to be a media session running
             # if current_session.source_app_user_model_id == TARGET_ID:
             info = await current_session.try_get_media_properties_async()
+            
 
             # song_attr[0] != '_' ignores system attributes
             info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
@@ -43,6 +44,7 @@ class MediaPlayer:
             # converts winrt vector to list
             info_dict['genres'] = list(info_dict['genres'])
             info_dict['timeline'] = timeline
+            info_dict["status"] = current_session.get_playback_info().playback_status
 
             # print(info_dict)
             # print(info_dict['thumbnail'])

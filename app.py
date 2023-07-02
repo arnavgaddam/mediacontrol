@@ -23,7 +23,6 @@ if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, 'templates')
     static_folder = os.path.join(sys._MEIPASS, 'static')
     app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
-    print(template_folder)
 else:
     app = Flask(__name__)
 
@@ -65,8 +64,13 @@ def send():
 def getsong():
     songinfo = asyncio.run(mp.get_media_info())
     mp.update_thumbnail()
+    button_label = "play"
+    if(songinfo['status'] == 5): #paused
+        button_label = "play"
+    elif(songinfo['status'] == 4): #playing
+        button_label = "pause"
 
-    return {'song': songinfo['title'], 'position': songinfo['artist']}
+    return {'song': songinfo['title'], 'position': songinfo['artist'], "label": button_label}
 
 
 app.run(debug=False, host="0.0.0.0")
