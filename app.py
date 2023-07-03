@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, logging
 from flask import render_template
 from flask import request
 from turbo_flask import Turbo
@@ -27,6 +27,7 @@ else:
     app = Flask(__name__)
 
 app = Flask(__name__)
+
 turbo = Turbo()
 turbo.init_app(app)
 mp = MediaPlayer()
@@ -36,6 +37,7 @@ def update_load():
     with app.app_context():
         while True:
             time.sleep(0.5)
+            mp.update_thumbnail()
             turbo.push(turbo.replace(render_template('media.html'), 'song'))
 
 
@@ -63,14 +65,13 @@ def send():
 @app.context_processor
 def getsong():
     songinfo = asyncio.run(mp.get_media_info())
-    mp.update_thumbnail()
     button_label = "play"
     if(songinfo['status'] == 5): #paused
         button_label = "play"
     elif(songinfo['status'] == 4): #playing
         button_label = "pause"
 
-    return {'song': songinfo['title'], 'position': songinfo['artist'], "label": button_label}
+    return {'song': songinfo['title'], 'artist': songinfo['artist'], "label": button_label}
 
 
 app.run(debug=False, host="0.0.0.0")

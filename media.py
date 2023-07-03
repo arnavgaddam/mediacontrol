@@ -65,7 +65,7 @@ class MediaPlayer:
         currentinfo = asyncio.run(self.get_media_info())
         thumb_stream_ref = currentinfo['thumbnail']
         # 5MB (5 million byte) buffer - thumbnail unlikely to be larger
-        thumb_read_buffer = Buffer(10000000)
+        thumb_read_buffer = Buffer(5000000)
         # copies data from data stream reference into buffer created above
         asyncio.run(self.read_stream_into_buffer(thumb_stream_ref, thumb_read_buffer))
         template_folder = "templates/"
@@ -73,14 +73,19 @@ class MediaPlayer:
         if getattr(sys, 'frozen', False):
             template_folder = os.path.join(sys._MEIPASS, 'templates')
             static_folder = os.path.join(sys._MEIPASS, 'static')
-        with open(os.path.join(static_folder, "media_thumb.jpg"), 'wb') as fobj:
-            fobj.write(bytearray(thumb_read_buffer))
-        color_thief = ColorThief(os.path.join(static_folder, "media_thumb.jpg"))
-        # get the dominant color
-        dominant_color = color_thief.get_color(quality=6)
-        palette = color_thief.get_palette(color_count=4)
-        with open(os.path.join(static_folder, "colors.json"), "w") as outfile:
-            json.dump(palette, outfile)
+        try:
+            with open("static/media_thumb.jpg", 'wb') as fobj:
+                fobj.write(bytearray(thumb_read_buffer))
+        except:
+            print("Error writing song thumbnail")
+        try:
+            color_thief = ColorThief("static/media_thumb.jpg")
+            # get the dominant color
+            palette = color_thief.get_palette(color_count=3)
+            with open("static/colors.json", "w") as outfile:
+                json.dump(palette, outfile)
+        except:
+            print("Error reading image")
 
     async def play_pause(self):
         sessions = await MediaManager.request_async()
